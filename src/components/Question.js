@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
   // add useEffect code
+  useEffect(() => {
+    // Function to handle the countdown
+    const countdown = () => {
+      setTimeRemaining(prevTime => {
+        if (prevTime <= 1) {
+          // When time runs out, reset timer and call onAnswered
+          onAnswered(false);
+          return 10; // Reset time remaining for the next question
+        }
+        // Decrease time remaining
+        return prevTime - 1;
+      });
+    };
 
+    // Set up the interval
+    const timerId = setInterval(countdown, 1000);
+
+    // Cleanup function to clear the interval
+    return () => clearInterval(timerId);
+  }, [onAnswered]);
   function handleAnswer(isCorrect) {
     setTimeRemaining(10);
     onAnswered(isCorrect);
